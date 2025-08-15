@@ -22,7 +22,9 @@
     "codegen:default": "deno task codegen:run --project default",
     "codegen:handler": "deno task codegen:run --project handler",
     "codegen": "deno task codegen:default & deno task codegen:handler",
-    "prepare": "deno run -A npm:husky"
+    "prepare": "deno run -A npm:husky",
+    "db:migrate": "deno run -A npm:drizzle-kit migrate",
+    "db:push": "deno run -A npm:drizzle-kit push"
   },
   "imports": {
     "@/": "./src/",
@@ -31,7 +33,11 @@
   "compilerOptions": {
     "jsx": "react-jsx",
     "jsxImportSource": "react",
-    "lib": ["DOM", "DOM.Iterable", "ES2022"],
+    "lib": [
+      "DOM",
+      "DOM.Iterable",
+      "ES2022"
+    ],
     "types": [
       "vite/client"
     ],
@@ -48,6 +54,10 @@
       "./src/**/graphql/**"
     ]
   },
-
-  "exclude": ["./etc", "./dist", "./node_modules", "./.vite"]
+  "exclude": [
+    "./etc",
+    "./dist",
+    "./node_modules",
+    "./.vite"
+  ]
 }
