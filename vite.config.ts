@@ -1,35 +1,38 @@
-import deno from "@deno/vite-plugin";
-import devServer, { defaultOptions } from "@hono/vite-dev-server";
-import react from "@vitejs/plugin-react";
-import { config } from "dotenv";
-import { builtinModules } from "node:module";
-import { dirname, join } from "node:path";
-import process from "node:process";
-import { fileURLToPath } from "node:url";
-import { defineConfig } from "rolldown-vite";
-import cssInjectedByJsPlugin from "vite-plugin-css-injected-by-js";
+import deno from '@deno/vite-plugin';
+import devServer, { defaultOptions } from '@hono/vite-dev-server';
+import react from '@vitejs/plugin-react';
+import { config } from 'dotenv';
+import { builtinModules } from 'node:module';
+import { dirname, join } from 'node:path';
+import process from 'node:process';
+import { fileURLToPath } from 'node:url';
+import { defineConfig } from 'rolldown-vite';
+import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js';
 
 import {
   appHandlerEntryFileNames,
   generatePackageJson,
   getEntryPoints,
   splitChunks,
-} from "./etc/scripts/vite.ts";
+} from './etc/scripts/vite.ts';
 
 config();
 
 const ROOT_DIR = dirname(fileURLToPath(import.meta.url));
-const HANDLERS_DIR = join(ROOT_DIR, "src", "apps");
+const HANDLERS_DIR = join(ROOT_DIR, 'src', 'apps');
 const { client: CLIENT_ENTRIES, server: SERVER_ENTRIES } = await getEntryPoints(
-  HANDLERS_DIR,
+  HANDLERS_DIR
 );
 const MINIFY = false;
 const PORT = Number(process.env.PORT || 8000);
-const OUT_DIR = "./dist";
-const ASSETS_PATH = "assets/";
+const OUT_DIR = './dist';
+const ASSETS_PATH = 'assets/';
 
 const clientConfig = defineConfig({
   plugins: [deno(), react(), cssInjectedByJsPlugin()],
+  css: {
+    postcss: './postcss.config.js',
+  },
   build: {
     outDir: OUT_DIR,
     emptyOutDir: true,
@@ -48,7 +51,7 @@ const clientConfig = defineConfig({
 const serverConfig = defineConfig(({ mode }) => ({
   server: {
     port: PORT,
-    allowedHosts: [".ngrok.io", ".ngrok.app"],
+    allowedHosts: ['.ngrok.io', '.ngrok.app'],
   },
   plugins: [
     deno(),
@@ -56,18 +59,18 @@ const serverConfig = defineConfig(({ mode }) => ({
     generatePackageJson(),
     {
       ...devServer({
-        entry: "./src/dev-server.ts",
-        exclude: [...defaultOptions.exclude, `/${ASSETS_PATH}*`, "/public/*"],
+        entry: './src/dev-server.ts',
+        exclude: [...defaultOptions.exclude, `/${ASSETS_PATH}*`, '/public/*'],
       }),
-      apply: "serve",
+      apply: 'serve',
     },
   ],
   ssr: {
-    target: "node",
+    target: 'node',
     /**
      * cjs modules problems in dev.
      */
-    noExternal: mode !== "development" ? true : undefined,
+    noExternal: mode !== 'development' ? true : undefined,
   },
   build: {
     commonjsOptions: { transformMixedEsModules: true },
@@ -79,7 +82,7 @@ const serverConfig = defineConfig(({ mode }) => ({
       external: [...builtinModules, /^node:/],
       input: SERVER_ENTRIES,
       output: {
-        chunkFileNames: "[name].js",
+        chunkFileNames: '[name].js',
         advancedChunks: splitChunks,
         entryFileNames: appHandlerEntryFileNames(),
       },
@@ -88,7 +91,7 @@ const serverConfig = defineConfig(({ mode }) => ({
 }));
 
 export default defineConfig((opts) => {
-  if (opts.mode === "client") {
+  if (opts.mode === 'client') {
     return clientConfig;
   }
 

@@ -24,7 +24,7 @@ const app = new Hono()
   /**
    *  Nested rutes must be defined at the end for proper type inference for hono/client.
    */
-  .route('/api/graphql', graphqlRoutes)
+  .route('/graphql', graphqlRoutes)
   .basePath(APP_CONFIG.BASE_PATH);
 
 export type AppType = typeof app;

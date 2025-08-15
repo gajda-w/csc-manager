@@ -1,5 +1,12 @@
 import { useLoaderData } from 'react-router';
-import Button from '@/lib/client/components/button.tsx';
+import { Button } from '@/lib/client/components/ui/button.tsx';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '@/lib/client/components/ui/card.tsx';
+import { Badge } from '@/lib/client/components/ui/badge.tsx';
 
 interface Post {
   id: string;
@@ -19,7 +26,7 @@ interface LoaderData {
 
 export const loader = async (): Promise<LoaderData> => {
   try {
-    const response = await fetch('/api/graphql', {
+    const response = await fetch('/graphql', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -63,74 +70,58 @@ export const AppView = () => {
   console.log({ posts });
 
   return (
-    <div style={{ display: 'grid', gap: '40px', padding: '20px' }}>
-      <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-        <h3
-          style={{
-            fontSize: '1.5rem',
-            marginBottom: '20px',
-            textAlign: 'center',
-          }}
-        >
+    <div className='container mx-auto py-8 space-y-8'>
+      <div className='max-w-4xl mx-auto space-y-6'>
+        <h3 className='text-2xl font-semibold text-center'>
           Posts from GraphQL API
         </h3>
 
         {posts.length === 0 ? (
-          <p style={{ textAlign: 'center', color: '#666' }}>No posts found</p>
+          <p className='text-center text-muted-foreground'>No posts found</p>
         ) : (
-          <div style={{ display: 'grid', gap: '20px' }}>
+          <div className='grid gap-6'>
             {posts.map((post) => (
-              <div
-                key={post.id}
-                style={{
-                  border: '1px solid #ddd',
-                  borderRadius: '8px',
-                  padding: '20px',
-                  backgroundColor: '#f9f9f9',
-                }}
-              >
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'flex-start',
-                    marginBottom: '10px',
-                  }}
-                >
-                  <h4
-                    style={{ margin: '0', fontSize: '1.2rem', color: '#333' }}
-                  >
-                    {post.title}
-                  </h4>
-                  <span
-                    style={{
-                      padding: '4px 8px',
-                      borderRadius: '4px',
-                      fontSize: '12px',
-                      fontWeight: 'bold',
-                      backgroundColor: post.published ? '#4CAF50' : '#f44336',
-                      color: 'white',
-                    }}
-                  >
-                    {post.published ? 'Published' : 'Draft'}
-                  </span>
-                </div>
-                <p
-                  style={{ margin: '10px 0', color: '#666', lineHeight: '1.5' }}
-                >
-                  {post.content}
-                </p>
-                <div
-                  style={{ fontSize: '14px', color: '#888', marginTop: '15px' }}
-                >
-                  <strong>Author:</strong> {post.user.name} ({post.user.email})
-                </div>
-              </div>
+              <Card key={post.id}>
+                <CardHeader>
+                  <div className='flex justify-between items-start'>
+                    <CardTitle className='text-xl'>{post.title}</CardTitle>
+                    <Badge variant={post.published ? 'default' : 'secondary'}>
+                      {post.published ? 'Published' : 'Draft'}
+                    </Badge>
+                  </div>
+                </CardHeader>
+                <CardContent className='space-y-4'>
+                  <p className='text-muted-foreground leading-relaxed'>
+                    {post.content}
+                  </p>
+                  <div className='text-sm text-muted-foreground'>
+                    <strong>Author:</strong> {post.user.name} ({post.user.email}
+                    )
+                  </div>
+                </CardContent>
+              </Card>
             ))}
           </div>
         )}
       </div>
-      <Button>Add Post</Button>
+
+      <div className='max-w-md mx-auto space-y-4'>
+        <div className='space-y-2'>
+          <label className='text-sm font-medium'>First Input</label>
+          <input
+            type='text'
+            className='w-full px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring'
+          />
+        </div>
+        <div className='space-y-2'>
+          <label className='text-sm font-medium'>Second Input</label>
+          <input
+            type='text'
+            className='w-full px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring'
+          />
+        </div>
+        <Button className='w-full'>Add Post</Button>
+      </div>
     </div>
   );
 };
