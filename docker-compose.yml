@@ -1,0 +1,36 @@
+x-app: &app
+  build:
+    context: .
+    dockerfile: Dockerfile
+  environment:
+    - LOG_LEVEL=${LOG_LEVEL-debug}
+  env_file:
+    - .env
+
+services:
+  app:
+    <<: *app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - '${APP_PORT:-8000}:8000'
+    volumes:
+      - ./src/:/app/src/
+
+  localstack:
+    image: localstack/localstack:4.5
+    environment:
+      # LocalStack configuration: https://docs.localstack.cloud/references/configuration/
+      - AWS_DEFAULT_REGION=${AWS_REGION?:AWS_REGION env is required}
+      - SERVICES=secretsmanager
+      - DEBUG=${DEBUG:-0}
+      - SECRET_MANAGER_APP_CONFIG_PATH=${SECRET_MANAGER_APP_CONFIG_PATH?:SECRET_MANAGER_APP_CONFIG_PATH env is required}
+    ports:
+      - '127.0.0.1:4566:4566' # LocalStack Gateway
+      - '127.0.0.1:4510-4559:4510-4559' # external services port range
+    volumes:
+      - './localstack:/var/lib/localstack'
+      - '/var/run/docker.sock:/var/run/docker.sock'
+      - './etc/commands/init-aws.sh:/etc/localstack/init/ready.d/init-aws.sh' # ready hook

@@ -1,0 +1,53 @@
+{
+  "name": "Monei",
+  "author": "Mirumee Labs <hello@mirumee.com>",
+  "version": "0.0.0",
+  "exports": {},
+  "tasks": {
+    "dev": "deno run -A npm:vite",
+    "dev:debug": "deno run --inspect-wait -A npm:vite",
+    "build": "vite build --mode client && vite build",
+    "lint:types": "deno check ./src",
+    "lint:format": "deno fmt --check ./src",
+    "lint:format:fix": "deno fmt ./src",
+    "lint:style": "deno lint ./src",
+    "lint:style:fix": "deno lint --fix ./src",
+    "lint": "deno task lint:types && deno task lint:format && deno task lint:style",
+    "lint:fix": "deno task lint:format:fix && deno task lint:style:fix",
+    "lint:staged": "deno task lint:fix",
+    "test": "deno run -A npm:vitest --run",
+    "test:coverage": "deno run -A npm:vitest --coverage --run",
+    "test:coverage:avg": "deno task test:coverage | grep -E \"All files\" -A 0 | awk '{print ($4 + $6 + $8+ $10) / 4}'",
+    "codegen:run": "dotenv -- deno run -A ./etc/scripts/npx-run.ts graphql-codegen --config codegen.ts",
+    "codegen:default": "deno task codegen:run --project default",
+    "codegen:handler": "deno task codegen:run --project handler",
+    "codegen": "deno task codegen:default & deno task codegen:handler",
+    "prepare": "deno run -A npm:husky"
+  },
+  "imports": {
+    "@/": "./src/",
+    "@/constants.ts": "./constants.ts"
+  },
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "jsxImportSource": "react",
+    "lib": ["DOM", "DOM.Iterable", "ES2022"],
+    "types": [
+      "vite/client"
+    ],
+    "strict": true
+  },
+  "lint": {
+    "exclude": [
+      "./src/**/*/generated.*"
+    ]
+  },
+  "fmt": {
+    "exclude": [
+      "./src/**/*/generated.*",
+      "./src/**/graphql/**"
+    ]
+  },
+
+  "exclude": ["./etc", "./dist", "./node_modules", "./.vite"]
+}

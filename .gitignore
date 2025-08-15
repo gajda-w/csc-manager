@@ -1,0 +1,50 @@
+# Node
+node_modules/
+
+# Deno
+.DENO_DIR/
+
+# Build
+/dist/
+/build/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env
+.env
+.env.*
+
+# Vite
+.vite/
+
+# Docker
+*.pid
+*.seed
+
+# Misc
+coverage/
+*.tgz
+
+# VSCode
+.vscode/
+
+# Others
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Lock files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Test
+/coverage/
+
+# Ignore local scripts
+etc/scripts/*.local.*
